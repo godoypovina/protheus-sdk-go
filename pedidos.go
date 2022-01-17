@@ -50,20 +50,22 @@ func (g *Protheus) GetPedido(numero string) (*PedidoResponse, error) {
 }
 
 type RequestNewPedido struct {
-	Nro        int     `json:"nro"`
-	Cod        string  `json:"cod"`
-	Cant       int     `json:"cant"`
-	Dto        float64 `json:"dto"`
-	CliID      string  `json:"cli_id"`
-	CliLj      string  `json:"cli_lj"`
-	Fecha      string  `json:"fecha"`
-	Cond       string  `json:"cond"`
-	Entrega    string  `json:"entrega"`
-	Vendedor   string  `json:"vendedor"`
-	TipoRemito string  `json:"tipoRemito"`
-	TipoVenta  string  `json:"tipoVenta"`
-	Precio     float64 `json:"precio"`
-	Deposito   int     `json:"deposito"`
+	Data []struct {
+		Nro        int     `json:"nro"`
+		Cod        string  `json:"cod"`
+		Cant       int     `json:"cant"`
+		Dto        float64 `json:"dto"`
+		CliID      string  `json:"cli_id"`
+		CliLj      string  `json:"cli_lj"`
+		Fecha      string  `json:"fecha"`
+		Cond       string  `json:"cond"`
+		Entrega    string  `json:"entrega"`
+		Vendedor   string  `json:"vendedor"`
+		TipoRemito string  `json:"tipoRemito"`
+		TipoVenta  string  `json:"tipoVenta"`
+		Precio     float64 `json:"precio"`
+		Deposito   int     `json:"deposito"`
+	} `json:"data"`
 }
 
 type NewPedidoResponse struct {
@@ -77,7 +79,7 @@ type NewPedidoResponse struct {
 // Devuelve el numero de PV generado.
 func (g *Protheus) CreatePedido(pedido *RequestNewPedido) (*NewPedidoResponse, error) {
 	pedidoResponse := NewPedidoResponse{}
-	err := g.post("/pedidos", &pedido, pedidoResponse)
+	err := g.post("/pedidos", &pedido, &pedidoResponse)
 	if err != nil {
 		return nil, err
 	}
