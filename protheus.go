@@ -12,7 +12,7 @@ import (
 
 const (
 	userAgent string = "Protheus Go SDK"
-	apiURL    string = "http://192.168.1.247:8591"
+	apiURL    string = "http://192.168.1.247:8585"
 	mimeJSON  string = "application/json"
 )
 
