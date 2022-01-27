@@ -22,8 +22,10 @@ type Protheus struct {
 }
 
 // NewProtheus returns a new instance of the Protheus API services
-func NewProtheus() *Protheus {
-	return &Protheus{}
+func NewProtheus(token string) *Protheus {
+	return &Protheus{
+		Token: token,
+	}
 }
 
 func (p *Protheus) get(resource string, params url.Values, dest interface{}) error {
