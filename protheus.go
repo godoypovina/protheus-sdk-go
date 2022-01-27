@@ -17,34 +17,36 @@ const (
 )
 
 // Protheus is the implementation to consume Protheus API services
-type Protheus struct{}
+type Protheus struct {
+	Token string
+}
 
 // NewProtheus returns a new instance of the Protheus API services
 func NewProtheus() *Protheus {
 	return &Protheus{}
 }
 
-func (g *Protheus) get(resource string, params url.Values, dest interface{}) error {
-	return g.doRequest("GET", resource, params, nil, dest)
+func (p *Protheus) get(resource string, params url.Values, dest interface{}) error {
+	return p.doRequest("GET", resource, params, nil, dest)
 }
 
-func (g *Protheus) post(resource string, data interface{}, dest interface{}) error {
+func (p *Protheus) post(resource string, data interface{}, dest interface{}) error {
 	buf, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
-	return g.doRequest("POST", resource, nil, bytes.NewBuffer(buf), dest)
+	return p.doRequest("POST", resource, nil, bytes.NewBuffer(buf), dest)
 }
 
-func (g *Protheus) put(resource string, data interface{}, dest interface{}) error {
+func (p *Protheus) put(resource string, data interface{}, dest interface{}) error {
 	buf, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
-	return g.doRequest("PUT", resource, nil, bytes.NewBuffer(buf), dest)
+	return p.doRequest("PUT", resource, nil, bytes.NewBuffer(buf), dest)
 }
 
-func (g *Protheus) newRequest(method string, uri string, body io.Reader) (*http.Request, error) {
+func (p *Protheus) newRequest(method string, uri string, body io.Reader) (*http.Request, error) {
 	var buf []byte
 
 	if body != nil {
@@ -66,12 +68,12 @@ func (g *Protheus) newRequest(method string, uri string, body io.Reader) (*http.
 	}
 
 	req.Header.Set("User-Agent", userAgent)
-	//req.Header.Set("Authorization", "Bearer "+g.Token)
+	req.Header.Set("Authorization", "BASIC "+p.Token)
 
 	return req, err
 }
 
-func (g *Protheus) doRequest(method string, resource string, params url.Values, body io.Reader, dest interface{}) error {
+func (p *Protheus) doRequest(method string, resource string, params url.Values, body io.Reader, dest interface{}) error {
 	//Build resource URL
 	u, err := url.ParseRequestURI(apiURL)
 	if err != nil {
@@ -80,7 +82,7 @@ func (g *Protheus) doRequest(method string, resource string, params url.Values, 
 	u.Path = "/rest" + resource
 	u.RawQuery = params.Encode()
 
-	req, err := g.newRequest(method, u.String(), body)
+	req, err := p.newRequest(method, u.String(), body)
 	if err != nil {
 		return err
 	}
