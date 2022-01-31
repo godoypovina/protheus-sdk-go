@@ -74,7 +74,6 @@ type NewPedidoResponse struct {
 	Data struct {
 		Pedidos []string `json:"pedidos"`
 	} `json:"data"`
-	Endpoint string `json:"endpoint"`
 }
 
 // Genera un Pedido de Venta.
