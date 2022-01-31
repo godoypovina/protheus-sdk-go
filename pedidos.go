@@ -1,5 +1,7 @@
 package protheus
 
+import "fmt"
+
 type pedido struct {
 	Fecha string `json:"fecha"`
 	Items []struct {
@@ -77,9 +79,10 @@ type NewPedidoResponse struct {
 
 // Genera un Pedido de Venta.
 // Devuelve el numero de PV generado.
-func (g *Protheus) CreatePedido(pedido *RequestNewPedido) (*NewPedidoResponse, error) {
-	pedidoResponse := NewPedidoResponse{}
+func (g *Protheus) CreatePedido(pedido *RequestNewPedido) (*interface{}, error) {
+	var pedidoResponse interface{}
 	err := g.post("/pedidos", &pedido, &pedidoResponse)
+	fmt.Println(err)
 	if err != nil {
 		return nil, err
 	}

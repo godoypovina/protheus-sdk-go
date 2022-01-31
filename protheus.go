@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -19,6 +20,11 @@ const (
 // Protheus is the implementation to consume Protheus API services
 type Protheus struct {
 	Token string
+}
+
+type ErrorResponse struct {
+	ErrorMessage string `json:"error_message"`
+	StatusCode   int    `json:"status_code"`
 }
 
 // NewProtheus returns a new instance of the Protheus API services
@@ -81,7 +87,7 @@ func (p *Protheus) doRequest(method string, resource string, params url.Values, 
 	if err != nil {
 		return err
 	}
-	u.Path = "/rest" + resource
+	u.Path = "/api/v1" + resource
 	u.RawQuery = params.Encode()
 
 	req, err := p.newRequest(method, u.String(), body)
@@ -95,6 +101,10 @@ func (p *Protheus) doRequest(method string, resource string, params url.Values, 
 	resp, err := client.Do(req)
 	if err != nil {
 		return err
+	}
+
+	if !(resp.StatusCode >= 200 && resp.StatusCode <= 299) {
+		return fmt.Errorf(resp.Status)
 	}
 
 	buf, err := ioutil.ReadAll(resp.Body)
